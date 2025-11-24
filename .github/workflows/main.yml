@@ -6,8 +6,6 @@
     <title>Double Snap Photobooth</title>
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --text-color: #ffffff;
             --strip-width: 300px;
         }
 
