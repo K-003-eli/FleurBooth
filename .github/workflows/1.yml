@@ -1,0 +1,61 @@
+name: Deploy Double Snap Photobooth
+
+# Defines when the workflow should run
+on:
+  # Triggers the workflow when code is pushed to the 'main' branch
+  push:
+    branches:
+      - main
+  # Allows you to manually run the workflow from the Actions tab
+  workflow_dispatch:
+
+# Defines the jobs (tasks) to be executed in the workflow
+jobs:
+  # The main job for building and deploying the site
+  deploy:
+    # Runs on a standard GitHub-hosted runner environment
+    runs-on: ubuntu-latest
+    
+    # Permissions needed for the deployment action
+    permissions:
+      contents: read
+      pages: write # Grants permission to deploy to GitHub Pages
+      id-token: write # Required for deployment authentication
+
+    # A sequence of steps to carry out the deployment
+    steps:
+      # Step 1: Checks out your repository code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Step 2: Sets up Node.js (required by the deploy action)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Configures the GitHub Pages environment
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      # Step 4: Runs a simple build step (optional for a single HTML file, but good practice)
+      # Since your photobooth is a single index.html file, we just copy it.
+      - name: Build Site (Copy index.html)
+        run: |
+          # Create the output directory (required by the artifact action)
+          mkdir -p ${{ steps.pages.outputs.working_directory }}
+          # Copy the index.html file into the output directory
+          cp index.html ${{ steps.pages.outputs.working_directory }}/index.html
+
+      # Step 5: Uploads the built directory (the folder containing index.html) as an artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # The directory to upload (default output directory from Setup Pages)
+          path: ${{ steps.pages.outputs.working_directory }}
+
+      # Step 6: Deploys the artifact to the GitHub Pages environment
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
