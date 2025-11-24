@@ -6,7 +6,6 @@
     <title>Double Snap Photobooth</title>
     <style>
         :root {
-            --accent-color: #ff0077; /* Hot Pink */
             --bg-color: #1a1a1a;
             --text-color: #ffffff;
             --strip-width: 300px;
